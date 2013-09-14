@@ -1,7 +1,16 @@
 <?php
 
-class PriceListPlugin 
+/**
+ * Class PriceListPlugin
+ */
+class PriceListPlugin
 {
+    /**
+     * Initializes the plugin
+     *
+     * Hooks necessary actions, registers new post type
+     * handles post saving proccess and other useful stuff
+     */
     public function init()
     {
         $this->registerPostType();
@@ -13,6 +22,9 @@ class PriceListPlugin
         add_shortcode('plp-price-list', array($this, 'makeShortcode'));
     }
 
+    /**
+     * Generates sample price list for informative needs
+     */
     protected function makeSamplePriceList()
     {
         $samplePostId = wp_insert_post(array(
@@ -41,6 +53,9 @@ class PriceListPlugin
         ), true);
     }
 
+    /**
+     * Registers help sub-page under the main price list menu
+     */
     public function registerHelpPage()
     {
         add_submenu_page('edit.php?post_type=price_list',
@@ -49,11 +64,20 @@ class PriceListPlugin
             'edit_dashboard', 'plp_help_page', array($this, 'helpPageLayout'));
     }
 
+    /**
+     * Layout of the help page
+     */
     public function helpPageLayout()
     {
         echo '<h1>'.__('What is this?', 'plp-domain').'</h1>';
     }
 
+    /**
+     * Sanitizes the given array. Price list items in our case
+     *
+     * @param array $input
+     * @return array
+     */
     protected function sanitizeArrayData(array $input)
     {
         array_walk_recursive($input, function(&$data){
@@ -62,16 +86,22 @@ class PriceListPlugin
         return $input;
     }
 
+    /**
+     * Checks for first time instalation
+     */
     protected function isFirstTimeInstall()
     {
         if(!get_option('plp_is_installed'))
         {
-            flush_rewrite_rules();
+            flush_rewrite_rules(); // Fix a 404 error bug on newly created post type pages
             $this->makeSamplePriceList();
             add_option('plp_is_installed', true, '', 'no');
         }
     }
 
+    /**
+     * Registers the price_list post type
+     */
     protected function registerPostType()
     {
         register_post_type( 'price_list',
@@ -109,16 +139,32 @@ class PriceListPlugin
         ); /* end of register post type */
     }
 
+    /**
+     * Registers additional form fields on price list page for list items
+     */
     public function registerPostMetaboxes()
     {
-        add_meta_box('price-list-items', 'Price List Items', array($this, 'plpPriceListItems'), 'price_list', 'normal', 'high');
+        add_meta_box('price-list-items', 'Price List Items', array($this, 'renderPriceListItems'), 'price_list', 'normal', 'high');
     }
 
-    public function plpPriceListItems($post, $box)
-    {
+    /**
+     * Renders the layout for additional form fields
+     *
+     * @param $post
+     * @param $box
+     */
+    public function renderPriceListItems($post, $box)
+    {   // Get price list items
         $priceListItems = get_post_meta($post->ID, '_price_list_item', true);
+        // enerate a nonce
         wp_nonce_field('plp_save_list_items', 'plp_nonce_field');
-        print '<div id="postcustomstuff"><table id="newmeta" width="100%"><thead><tr><th class="left">Item Description</th><th>Item Price</th></tr></thead>';
+        // Output table with list item content
+        print '<div id="postcustomstuff">
+                <table id="newmeta" width="100%">
+                  <thead><tr>
+                    <th class="left">'.__('Item Description', 'plp-domain').'</th>
+                    <th>'.__('Item Price', 'plp-domain').'</th>
+                  </tr></thead>';
         if(is_array($priceListItems)){
             foreach ($priceListItems as $i => $item) {
                 print '<tr class="price-list-item-wrapper">';
@@ -126,23 +172,31 @@ class PriceListPlugin
                 printf('<td width="20%%"><input type="text" name="price-list-item[%d][price]" value="%s"></td> ', $i, $item['price']);
                 print '</tr>';
             }
-        }else{
+        }
+        // If price list doesn't have any item yet, generate an empty fields for them
+        else{
             print '<tr class="price-list-item-wrapper">';
             printf('<td class="left" width="80%%"><textarea name="price-list-item[%d][desc]"></textarea></td> ', 0);
             printf('<td width="20%%"><input type="text" name="price-list-item[%d][price]" value=""></td> ', 0);
             print '</tr>';
         }
         print '</table></div>'; // Close main table
-        printf('<div style="margin-top:10px">
-                    <button id="add-price-list-item">%s</button>
-                    <button id="remove-price-list-item">%s</button>
-                </div>', __('Add Item', 'plp-domain'), __('Remove Item', 'plp-domain')) ;
+        // Echo out Add/Delete buttons
+        print '<div style="margin-top:10px">
+                <button id="add-price-list-item">'. __('Add Item', 'plp-domain').'</button>
+                <button id="remove-price-list-item">'.__('Remove Item', 'plp-domain').'</button>
+              </div>';
     }
 
+    /**
+     * Hooks on save_post and checks whether the price list items is saving
+     *
+     * @param $post_id
+     */
     public function savePriceListItems($post_id)
     {
         if(isset($_POST['price-list-item']))
-        {
+        {   // Check the nonce
             check_admin_referer('plp_save_list_items', 'plp_nonce_field');
             // If autosave is running - do nothing
             if((defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE))
@@ -154,30 +208,46 @@ class PriceListPlugin
         }
     }
 
+    /**
+     * Enqueue JS only for the price list dashboard page
+     */
     public function adminScriptInit()
     {
         if(get_current_screen()->post_type === 'price_list')
             wp_enqueue_script('plp_meta_boxes', PLP_URL.'js/plp-meta-boxes.js', array('jquery'));
     }
 
+    /**
+     * Makes a request for the given price list
+     *
+     * @param $postInfo
+     * @return null|object|WP_Post
+     */
     protected function getPriceList($postInfo)
     {
         if(empty($postInfo))
             return;
 
+        // Return price list by name
         if(!is_array($postInfo))
-            return get_page_by_title($postInfo, 'OBJECT', 'price_list');
+            return get_page_by_title((string)$postInfo, 'OBJECT', 'price_list');
 
+        // Return price list by additional arguments
         $args = array(
             'p' => $postInfo['post_id'],
             'name' => $postInfo['post_slug'],
             'post_type' => 'price_list',
-            'posts_per_page' => 1,
+            'posts_per_page' => 1, // get only 1 object per request
         );
         $query = new WP_Query($args);
         return $query->post;
     }
 
+    /**
+     * Renders the price list or dies trying
+     *
+     * @param $postInfo
+     */
     protected function renderPriceList($postInfo)
     {   // TODO: Replace wp_die with something less harmful
         if(is_null($priceList = $this->getPriceList($postInfo)) || !is_a($priceList, 'WP_Post'))
@@ -195,6 +265,12 @@ class PriceListPlugin
         print '</div>';
     }
 
+    /**
+     * Makes a shortcode to render price list on front-end
+     *
+     * @param $atts
+     * @return string
+     */
     public function makeShortcode($atts)
     {
         $postInfo = isset($atts['list_title']) ? $atts['list_title'] : $atts;
