@@ -13,6 +13,34 @@ class PriceListPlugin
         add_shortcode('plp-price-list', array($this, 'makeShortcode'));
     }
 
+    protected function makeSamplePriceList()
+    {
+        $samplePostId = wp_insert_post(array(
+            'post_type' => 'price_list',
+            'post_name' => 'plp-sample-price-list',
+            'post_title' => 'Sample price list',
+            'post_status' => 'publish',
+        ), true);
+
+        if(is_a($samplePostId, 'WP_Error'))
+            wp_die('PLP can not create the sample price list');
+
+        add_post_meta($samplePostId, '_price_list_item', array(
+            array(
+                'desc' => 'Roasted nachos can be made smashed by covering with red wine.',
+                'price' => '150.99',
+            ),
+            array(
+                'desc' => 'Per guest prepare one quarter cup of tabasco.',
+                'price' => '05.79',
+            ),
+            array(
+                'desc' => 'Flavor one jar of tofu in one cup of whiskey.',
+                'price' => '25.00',
+            ),
+        ), true);
+    }
+
     public function registerHelpPage()
     {
         add_submenu_page('edit.php?post_type=price_list', 'Price list plugin help page', 'What is this?', 'edit_dashboard', 'plp_help_page', array($this, 'helpPageLayout'));
@@ -36,6 +64,7 @@ class PriceListPlugin
         if(!get_option('plp_is_installed'))
         {
             flush_rewrite_rules();
+            $this->makeSamplePriceList();
             add_option('plp_is_installed', true, '', 'no');
         }
     }
