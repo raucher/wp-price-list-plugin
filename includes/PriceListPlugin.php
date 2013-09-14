@@ -43,12 +43,15 @@ class PriceListPlugin
 
     public function registerHelpPage()
     {
-        add_submenu_page('edit.php?post_type=price_list', 'Price list plugin help page', 'What is this?', 'edit_dashboard', 'plp_help_page', array($this, 'helpPageLayout'));
+        add_submenu_page('edit.php?post_type=price_list',
+            __('Price list plugin help page', 'plp-domain'),
+            __('What is this?', 'plp-domain'),
+            'edit_dashboard', 'plp_help_page', array($this, 'helpPageLayout'));
     }
 
     public function helpPageLayout()
     {
-        echo '<h1>What is this?</h1>';
+        echo '<h1>'.__('What is this?', 'plp-domain').'</h1>';
     }
 
     protected function sanitizeArrayData(array $input)
@@ -74,21 +77,21 @@ class PriceListPlugin
         register_post_type( 'price_list',
             // let's now add all the options for this post type
             array('labels' => array(
-                'name' => __('Price Lists', 'bonestheme'), /* This is the Title of the Group */
-                'singular_name' => __('Price Lists', 'bonestheme'), /* This is the individual type */
-                //'all_items' => __('All Custom Posts', 'bonestheme'), /* the all items menu item */
-                'add_new' => __('Add New', 'bonestheme'), /* The add new menu item */
-                'add_new_item' => __('Add New Price List', 'bonestheme'), /* Add New Display Title */
-                'edit' => __( 'Edit', 'bonestheme' ), /* Edit Dialog */
-                'edit_item' => __('Edit Price Lists', 'bonestheme'), /* Edit Display Title */
-                'new_item' => __('New Price List', 'bonestheme'), /* New Display Title */
-                'view_item' => __('View Price List', 'bonestheme'), /* View Display Title */
-                'search_items' => __('Search Price List', 'bonestheme'), /* Search Custom Type Title */
-                'not_found' =>  __('Nothing found in the Database.', 'bonestheme'), /* This displays if there are no entries yet */
-                'not_found_in_trash' => __('Nothing found in Trash', 'bonestheme'), /* This displays if there is nothing in the trash */
+                'name' => __('Price Lists', 'plp-domain'), /* This is the Title of the Group */
+                'singular_name' => __('Price Lists', 'plp-domain'), /* This is the individual type */
+                //'all_items' => __('All Custom Posts', 'plp-domain'), /* the all items menu item */
+                'add_new' => __('Add New', 'plp-domain'), /* The add new menu item */
+                'add_new_item' => __('Add New Price List', 'plp-domain'), /* Add New Display Title */
+                'edit' => __( 'Edit', 'plp-domain' ), /* Edit Dialog */
+                'edit_item' => __('Edit Price Lists', 'plp-domain'), /* Edit Display Title */
+                'new_item' => __('New Price List', 'plp-domain'), /* New Display Title */
+                'view_item' => __('View Price List', 'plp-domain'), /* View Display Title */
+                'search_items' => __('Search Price List', 'plp-domain'), /* Search Custom Type Title */
+                'not_found' =>  __('Nothing found in the Database.', 'plp-domain'), /* This displays if there are no entries yet */
+                'not_found_in_trash' => __('Nothing found in Trash', 'plp-domain'), /* This displays if there is nothing in the trash */
                 'parent_item_colon' => ''
             ), /* end of arrays */
-                  'description' => __( 'Price list to display on frontend', 'bonestheme' ), /* Custom Type Description */
+                  'description' => __( 'Price list to display on frontend', 'plp-domain' ), /* Custom Type Description */
                   'public' => true,
                   'publicly_queryable' => true,
                   'exclude_from_search' => false,
