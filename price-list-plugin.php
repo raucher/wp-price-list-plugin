@@ -24,18 +24,15 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 ********************************************************************************/
 
+require_once 'includes/PriceListPlugin.php';
+
 defined('PLP_URL') or define('PLP_URL', plugin_dir_url(__FILE__));
 defined('PLP_PATH') or define('PLP_PATH', plugin_dir_path(__FILE__));
 
 add_action('plugins_loaded', 'load_plp_text_domain');
-function load_plp_text_domain()
-{
+function load_plp_text_domain(){
     load_plugin_textdomain('plp-domain', false, dirname(plugin_basename(__FILE__)).'/translation/');
 }
-
-var_dump(dirname(plugin_basename(__FILE__)).'/includes/translations/');
-
-require_once 'includes/PriceListPlugin.php';
 
 add_action('init', array(new PriceListPlugin, 'init'));
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2013-09-14 16:33+0200\n"
-"PO-Revision-Date: 2013-09-14 16:35+0200\n"
+"POT-Creation-Date: 2013-09-14 17:07+0200\n"
+"PO-Revision-Date: 2013-09-14 17:08+0200\n"
 "Last-Translator: Maksims Muizininkas <makc.translations@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -14,55 +14,64 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ..\n"
+"X-Poedit-SearchPath-2: ../includes\n"
 
-#: ../PriceListPlugin.php:48
+#: ../includes/PriceListPlugin.php:47
 msgid "Price list plugin help page"
 msgstr ""
 
-#: ../PriceListPlugin.php:49
+#: ../includes/PriceListPlugin.php:48 ../includes/PriceListPlugin.php:54
 msgid "What is this?"
 msgstr "Chto eto?"
 
-#: ../PriceListPlugin.php:86 ../PriceListPlugin.php:87
+#: ../includes/PriceListPlugin.php:80 ../includes/PriceListPlugin.php:81
 msgid "Price Lists"
 msgstr ""
 
-#: ../PriceListPlugin.php:89
+#: ../includes/PriceListPlugin.php:83
 msgid "Add New"
 msgstr ""
 
-#: ../PriceListPlugin.php:90
+#: ../includes/PriceListPlugin.php:84
 msgid "Add New Price List"
 msgstr ""
 
-#: ../PriceListPlugin.php:91
+#: ../includes/PriceListPlugin.php:85
 msgid "Edit"
 msgstr ""
 
-#: ../PriceListPlugin.php:92
+#: ../includes/PriceListPlugin.php:86
 msgid "Edit Price Lists"
 msgstr ""
 
-#: ../PriceListPlugin.php:93
+#: ../includes/PriceListPlugin.php:87
 msgid "New Price List"
 msgstr ""
 
-#: ../PriceListPlugin.php:94
+#: ../includes/PriceListPlugin.php:88
 msgid "View Price List"
 msgstr ""
 
-#: ../PriceListPlugin.php:95
+#: ../includes/PriceListPlugin.php:89
 msgid "Search Price List"
 msgstr ""
 
-#: ../PriceListPlugin.php:96
+#: ../includes/PriceListPlugin.php:90
 msgid "Nothing found in the Database."
 msgstr ""
 
-#: ../PriceListPlugin.php:97
+#: ../includes/PriceListPlugin.php:91
 msgid "Nothing found in Trash"
 msgstr ""
 
-#: ../PriceListPlugin.php:100
+#: ../includes/PriceListPlugin.php:94
 msgid "Price list to display on frontend"
+msgstr ""
+
+#: ../includes/PriceListPlugin.php:139
+msgid "Add Item"
+msgstr ""
+
+#: ../includes/PriceListPlugin.php:139
+msgid "Remove Item"
 msgstr ""

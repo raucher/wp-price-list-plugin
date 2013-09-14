@@ -133,10 +133,10 @@ class PriceListPlugin
             print '</tr>';
         }
         print '</table></div>'; // Close main table
-        print '<div style="margin-top:10px">
-            <button id="add-price-list-item">Add Item</button>
-            <button id="remove-price-list-item">Remove Item</button>
-           </div>';
+        printf('<div style="margin-top:10px">
+                    <button id="add-price-list-item">%s</button>
+                    <button id="remove-price-list-item">%s</button>
+                </div>', __('Add Item', 'plp-domain'), __('Remove Item', 'plp-domain')) ;
     }
 
     public function savePriceListItems($post_id)
