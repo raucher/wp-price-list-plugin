@@ -1,6 +1,7 @@
 jQuery(document).ready(function($){
     console.log(plpAjaxData);
-    var pageCount = plpAjaxData.totalItemCount/plpAjaxData.itemsPerPage;
+    var pageCount = Math.ceil(plpAjaxData.totalItemCount/plpAjaxData.itemsPerPage);
+    var priceListContainer = $('.plp-price-list-block');
     var paginationBlock = $('<ul/>', {
         'class': 'plp-ajax-pagination'
     });
@@ -11,17 +12,22 @@ jQuery(document).ready(function($){
             'data-pagenum': i
         }).appendTo(paginationBlock);
     }
-    $('.plp-price-list-block dl').after(paginationBlock);
 
-    $('.plp-ajax-pagination li').on('click', function(event){
+    $('dl', priceListContainer).after(paginationBlock);
+
+    $('.plp-ajax-pagination li', priceListContainer).on('click', function(event){
         var offset = plpAjaxData.itemsPerPage * ($(this).data('pagenum') - 1);
+        var activeEl = $(this);
         $.post(plpAjaxData.ajaxurl, {
             'plp-pagination-offset': offset,
-            'action': 'plp-ajax-pagination', // plpAjaxData.action,
+            'action': plpAjaxData.action,
             'plp-ajax-nonce': plpAjaxData.nonce,
             'price-list-id': plpAjaxData.priceListId
         },function(data){
-            alert(data.priceListHtml);
+            $('dl', priceListContainer).html(data.priceListHtml);
+
+            $('.plp-ajax-pagination li', priceListContainer).removeClass('active');
+            activeEl.addClass('active');
         }, 'json');
     });
 });
