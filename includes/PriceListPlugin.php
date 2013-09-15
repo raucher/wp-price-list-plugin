@@ -260,15 +260,26 @@ class PriceListPlugin
 
         print '<div class="plp-price-list-block">';
             print "<h3>{$priceList->post_title}</h3>";
-            print '<dl class="dl-horizontal special green">';
+            print '<dl class="horizontal special green">';
             echo $this->renderPriceListItemsFrontend();
         print '</dl></div>';
+        $this->makeAjaxPagination();
     }
 
     protected function makeAjaxPagination()
     {
         // TODO: enqueue pagination script to generate pagination DOM elements with ajax for them
         // TODO: hook function to return data
+
+        wp_enqueue_script('plp_ajax_pagination', PLP_URL.'js/plp-ajax-pagination.js', array('jquery'));
+        wp_localize_script('plp_ajax_pagination', 'plpAjaxData', array(
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'plp-ajax-nonce' => wp_create_nonce('plp-ajax-pagination-nonce'),
+            'totalItemCount' => count($this->_priceListItems),
+            'itemsPerPage' => $this->_itemsPerPage,
+        ));
+        add_action('wp_ajax_plp-ajax-pagination', array($this, 'ajaxPaginationHandler'));
+        add_action('wp_ajax_nopriv_plp-ajax-pagination', array($this, 'ajaxPaginationHandler'));
     }
 
     public function ajaxPaginationHandler()
@@ -305,7 +316,6 @@ class PriceListPlugin
         $postInfo = isset($atts['list_title']) ? $atts['list_title'] : $atts;
         ob_start();
         $this->renderPriceList($postInfo);
-
         return ob_get_clean();
     }
 }
