@@ -262,7 +262,7 @@ class PriceListPlugin
 
     protected function setProcessedParams($params, $rewrite = false)
     {
-        $this->_itemsPerPage = isset($params['per_page']) ? (int)$params['per_page'] : 7;
+        $this->_itemsPerPage = isset($params['per_page']) ? (int)$params['per_page'] : null;
 
         if(isset($params['list_title'])){
             $this->_priceListParams = $params['list_title'];
@@ -307,6 +307,9 @@ class PriceListPlugin
 
     protected function makeAjaxPagination()
     {
+        if(is_null($this->_itemsPerPage))
+            return;
+
         wp_enqueue_script('plp_ajax_pagination', PLP_URL.'js/plp-ajax-pagination.js', array('jquery'));
         wp_localize_script('plp_ajax_pagination', 'plpAjaxData', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
@@ -324,7 +327,8 @@ class PriceListPlugin
             wp_die('Busted!');
 
         $this->setupEnvironment(array(
-            'list_id' => (int)$_POST['price-list-id'],
+            'list_id' => (int)$_POST['plp-price-list-id'],
+            'per_page' => (int)$_POST['plp-items-per-page'],
         ));
 
         echo json_encode(array(
