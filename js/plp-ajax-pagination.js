@@ -18,9 +18,10 @@ jQuery(document).ready(function($){
         $.post(plpAjaxData.ajaxurl, {
             'plp-pagination-offset': offset,
             'action': 'plp-ajax-pagination', // plpAjaxData.action,
-            'plp-ajax-nonce' : plpAjaxData.nonce
+            'plp-ajax-nonce': plpAjaxData.nonce,
+            'price-list-id': plpAjaxData.priceListId
         },function(data){
-            alert(data.offset);
+            alert(data.priceListHtml);
         }, 'json');
     });
 });

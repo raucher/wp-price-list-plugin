@@ -267,30 +267,38 @@ class PriceListPlugin
             print '<dl class="horizontal special green">';
             echo $this->renderPriceListItemsFrontend();
         print '</dl></div>';
-        $this->makeAjaxPagination();
+        $this->makeAjaxPagination($priceList->ID);
     }
 
-    protected function makeAjaxPagination()
+    protected function makeAjaxPagination($priceListId)
     {
-        // TODO: enqueue pagination script to generate pagination DOM elements with ajax for them
-        // TODO: hook function to return data
-
         wp_enqueue_script('plp_ajax_pagination', PLP_URL.'js/plp-ajax-pagination.js', array('jquery'));
         wp_localize_script('plp_ajax_pagination', 'plpAjaxData', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'action' => 'plp-ajax-pagination',
             'nonce' => wp_create_nonce('plp-ajax-pagination-nonce'),
+            'priceListId' => $priceListId,
             'totalItemCount' => count($this->_priceListItems),
             'itemsPerPage' => $this->_itemsPerPage,
         ));
-        /*add_action('wp_ajax_plp-ajax-pagination', array($this, 'ajaxPaginationHandler'));
-        add_action('wp_ajax_nopriv_plp-ajax-pagination', array($this, 'ajaxPaginationHandler'));*/
     }
 
     public function ajaxPaginationHandler()
     {
-        if(check_ajax_referer('plp-ajax-pagination-nonce', 'plp-ajax-nonce', false));
-            echo json_encode(array('offset'=> (int) $_POST['plp-pagination-offset']));
+        // TODO: check the nonce
+        if(!check_ajax_referer('plp-ajax-pagination-nonce', 'plp-ajax-nonce', false))
+            wp_die('Busted!');
+
+        $postInfo = array(
+            'post_id' => (int)$_POST['price-list-id'],
+            'post_slug' => null,
+        );
+        $priceListObject = $this->getPriceListObject($postInfo);
+        $this->_priceListItems = get_post_meta($priceListObject->ID, '_price_list_item', true);
+
+        echo json_encode(array(
+            'priceListHtml'=> $this->renderPriceListItemsFrontend((int)$_POST['plp-pagination-offset']),
+        ));
         die();
     }
 
