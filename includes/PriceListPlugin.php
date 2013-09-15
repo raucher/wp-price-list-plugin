@@ -5,6 +5,9 @@
  */
 class PriceListPlugin
 {
+    protected $_priceListItems;
+    protected $_itemsPerPage;
+
     /**
      * Initializes the plugin
      *
@@ -223,7 +226,7 @@ class PriceListPlugin
      * @param $postInfo
      * @return null|object|WP_Post
      */
-    protected function getPriceList($postInfo)
+    protected function getPriceListObject($postInfo)
     {
         if(empty($postInfo))
             return;
@@ -250,19 +253,45 @@ class PriceListPlugin
      */
     protected function renderPriceList($postInfo)
     {   // TODO: Replace wp_die with something less harmful
-        if(is_null($priceList = $this->getPriceList($postInfo)) || !is_a($priceList, 'WP_Post'))
+        if(is_null($priceList = $this->getPriceListObject($postInfo)) || !is_a($priceList, 'WP_Post'))
             wp_die('Can not retrieve given price list');
 
-        $priceListItems = get_post_meta($priceList->ID, '_price_list_item', true);
+        $this->_priceListItems = get_post_meta($priceList->ID, '_price_list_item', true);
+
         print '<div class="plp-price-list-block">';
             print "<h3>{$priceList->post_title}</h3>";
             print '<dl class="dl-horizontal special green">';
-            foreach($priceListItems as $item)
-            {
-                print "<dt>{$item['desc']}</dt><dd>{$item['price']}</dd>";
-            }
-            print '</dl>';
-        print '</div>';
+            echo $this->renderPriceListItemsFrontend();
+        print '</dl></div>';
+    }
+
+    protected function makeAjaxPagination()
+    {
+        // TODO: enqueue pagination script to generate pagination DOM elements with ajax for them
+        // TODO: hook function to return data
+    }
+
+    public function ajaxPaginationHandler()
+    {
+        if(check_ajax_referer('plp-ajax-pagination-nonce', 'plp-ajax-nonce', false));
+            return json_encode(array(
+                'priceListItems' => renderPriceListItemsFrontend((int) $_POST['plp-pagination-offset']),
+            ));
+    }
+
+    protected function renderPriceListItemsFrontend($offset = 0)
+    {
+        // TODO: init items per page somewhere
+        $this->_itemsPerPage = 1;
+        $htmlOutput = '';
+        $itemsToShow = array_slice($this->_priceListItems, $offset, $this->_itemsPerPage);
+
+        foreach($itemsToShow as $item)
+        {
+            $htmlOutput .= "<dt>{$item['desc']}</dt><dd>{$item['price']}</dd>";
+        }
+
+        return $htmlOutput;
     }
 
     /**
