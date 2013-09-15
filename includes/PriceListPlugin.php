@@ -18,6 +18,10 @@ class PriceListPlugin
     {
         $this->registerPostType();
         $this->isFirstTimeInstall();
+
+        add_action('wp_ajax_plp-ajax-pagination', array($this, 'ajaxPaginationHandler'));
+        add_action('wp_ajax_nopriv_plp-ajax-pagination', array($this, 'ajaxPaginationHandler'));
+
         add_action('admin_menu', array($this, 'registerHelpPage'));
         add_action('add_meta_boxes', array($this, 'registerPostMetaboxes'));
         add_action('admin_enqueue_scripts', array($this, 'adminScriptInit'));
@@ -274,20 +278,20 @@ class PriceListPlugin
         wp_enqueue_script('plp_ajax_pagination', PLP_URL.'js/plp-ajax-pagination.js', array('jquery'));
         wp_localize_script('plp_ajax_pagination', 'plpAjaxData', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
-            'plp-ajax-nonce' => wp_create_nonce('plp-ajax-pagination-nonce'),
+            'action' => 'plp-ajax-pagination',
+            'nonce' => wp_create_nonce('plp-ajax-pagination-nonce'),
             'totalItemCount' => count($this->_priceListItems),
             'itemsPerPage' => $this->_itemsPerPage,
         ));
-        add_action('wp_ajax_plp-ajax-pagination', array($this, 'ajaxPaginationHandler'));
-        add_action('wp_ajax_nopriv_plp-ajax-pagination', array($this, 'ajaxPaginationHandler'));
+        /*add_action('wp_ajax_plp-ajax-pagination', array($this, 'ajaxPaginationHandler'));
+        add_action('wp_ajax_nopriv_plp-ajax-pagination', array($this, 'ajaxPaginationHandler'));*/
     }
 
     public function ajaxPaginationHandler()
     {
         if(check_ajax_referer('plp-ajax-pagination-nonce', 'plp-ajax-nonce', false));
-            return json_encode(array(
-                'priceListItems' => renderPriceListItemsFrontend((int) $_POST['plp-pagination-offset']),
-            ));
+            echo json_encode(array('offset'=> (int) $_POST['plp-pagination-offset']));
+        die();
     }
 
     protected function renderPriceListItemsFrontend($offset = 0)

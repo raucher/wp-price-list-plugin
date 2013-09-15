@@ -35,4 +35,3 @@ function load_plp_text_domain(){
 }
 
 add_action('init', array(new PriceListPlugin, 'init'));
-
