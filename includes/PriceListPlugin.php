@@ -7,6 +7,8 @@ class PriceListPlugin
 {
     protected $_priceListItems;
     protected $_itemsPerPage;
+    protected $_priceListParams;
+    protected $_priceListObject;
 
     /**
      * Initializes the plugin
@@ -230,24 +232,60 @@ class PriceListPlugin
      * @param $postInfo
      * @return null|object|WP_Post
      */
-    protected function getPriceListObject($postInfo)
+    protected function setPriceListObject()
     {
-        if(empty($postInfo))
+        if(empty($this->_priceListParams))
             return;
 
         // Return price list by name
-        if(!is_array($postInfo))
-            return get_page_by_title((string)$postInfo, 'OBJECT', 'price_list');
+        if(!is_array($this->_priceListParams)){
+            $this->_priceListObject = get_page_by_title((string)$this->_priceListParams, 'OBJECT', 'price_list');
+        }
+        else{
+            // Return price list by additional arguments
+            $query = new WP_Query($this->_priceListParams);
+            $this->_priceListObject = $query->post;
+        }
 
-        // Return price list by additional arguments
-        $args = array(
-            'p' => $postInfo['post_id'],
-            'name' => $postInfo['post_slug'],
-            'post_type' => 'price_list',
-            'posts_per_page' => 1, // get only 1 object per request
-        );
-        $query = new WP_Query($args);
-        return $query->post;
+        if(is_null($this->_priceListObject) || !is_a($this->_priceListObject, 'WP_Post'))
+            wp_die('Can not retrieve given price list');
+
+        return $this;
+    }
+
+    protected function setPriceListItems()
+    {
+        $this->_priceListItems = get_post_meta($this->_priceListObject->ID, '_price_list_item', true);
+
+        return $this;
+    }
+
+    protected function setProcessedParams($params, $rewrite = false)
+    {
+        $this->_itemsPerPage = isset($params['per_page']) ? (int)$params['per_page'] : 7;
+
+        if(isset($params['list_title'])){
+            $this->_priceListParams = $params['list_title'];
+        }
+        else{
+            $defaults = array(
+                'p' => isset($params['list_id']) ? $params['list_id'] : null,
+                'name' => isset($params['list_slug']) ? $params['list_slug'] : null,
+                'post_type' => 'price_list',
+                'posts_per_page' => 1, // get only 1 object per request
+            );
+
+            $this->_priceListParams = wp_parse_args($params, $defaults);
+        }
+
+        return $this;
+    }
+
+    protected function setupEnvironment($envParams)
+    {
+        $this->setProcessedParams($envParams)
+             ->setPriceListObject()
+             ->setPriceListItems();
     }
 
     /**
@@ -256,28 +294,25 @@ class PriceListPlugin
      * @param $postInfo
      */
     protected function renderPriceList($postInfo)
-    {   // TODO: Replace wp_die with something less harmful
-        if(is_null($priceList = $this->getPriceListObject($postInfo)) || !is_a($priceList, 'WP_Post'))
-            wp_die('Can not retrieve given price list');
-
-        $this->_priceListItems = get_post_meta($priceList->ID, '_price_list_item', true);
+    {
+        $this->setupEnvironment($postInfo);
 
         print '<div class="plp-price-list-block">';
-            print "<h3>{$priceList->post_title}</h3>";
+            print "<h3>{$this->_priceListObject->post_title}</h3>";
             print '<dl class="horizontal special green">';
             echo $this->renderPriceListItemsFrontend();
         print '</dl></div>';
-        $this->makeAjaxPagination($priceList->ID);
+        $this->makeAjaxPagination();
     }
 
-    protected function makeAjaxPagination($priceListId)
+    protected function makeAjaxPagination()
     {
         wp_enqueue_script('plp_ajax_pagination', PLP_URL.'js/plp-ajax-pagination.js', array('jquery'));
         wp_localize_script('plp_ajax_pagination', 'plpAjaxData', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'action' => 'plp-ajax-pagination',
             'nonce' => wp_create_nonce('plp-ajax-pagination-nonce'),
-            'priceListId' => $priceListId,
+            'priceListId' => $this->_priceListObject->ID,
             'totalItemCount' => count($this->_priceListItems),
             'itemsPerPage' => $this->_itemsPerPage,
         ));
@@ -285,29 +320,23 @@ class PriceListPlugin
 
     public function ajaxPaginationHandler()
     {
-        // TODO: check the nonce
         if(!check_ajax_referer('plp-ajax-pagination-nonce', 'plp-ajax-nonce', false))
             wp_die('Busted!');
 
-        $postInfo = array(
-            'post_id' => (int)$_POST['price-list-id'],
-            'post_slug' => null,
-        );
-        $priceListObject = $this->getPriceListObject($postInfo);
-        $this->_priceListItems = get_post_meta($priceListObject->ID, '_price_list_item', true);
+        $this->setupEnvironment(array(
+            'list_id' => (int)$_POST['price-list-id'],
+        ));
 
         echo json_encode(array(
-            'priceListHtml'=> $this->renderPriceListItemsFrontend((int)$_POST['plp-pagination-offset']),
+            'priceListHtml' => $this->renderPriceListItemsFrontend((int)$_POST['plp-pagination-offset']),
         ));
         die();
     }
 
     protected function renderPriceListItemsFrontend($offset = 0)
     {
-        // TODO: init items per page somewhere
-        $this->_itemsPerPage = 1;
-        $htmlOutput = '';
         $itemsToShow = array_slice($this->_priceListItems, $offset, $this->_itemsPerPage);
+        $htmlOutput = '';
 
         foreach($itemsToShow as $item)
         {
@@ -325,9 +354,8 @@ class PriceListPlugin
      */
     public function makeShortcode($atts)
     {
-        $postInfo = isset($atts['list_title']) ? $atts['list_title'] : $atts;
         ob_start();
-        $this->renderPriceList($postInfo);
+        $this->renderPriceList($atts);
         return ob_get_clean();
     }
 }
