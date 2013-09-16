@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Price List Plugin
  * Plugin URI:
- * Description: Alows you to create price-lists and embed them with a shortcode
+ * Description: Allows you to create price-lists and embed them with a shortcode
  * Version: 1.0
  * Author: raucher
  * Author URI: https://github.com/raucher
