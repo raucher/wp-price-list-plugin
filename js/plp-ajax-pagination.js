@@ -1,4 +1,4 @@
-function runPlpPagination(plpAjaxData){
+function runPlpPagination(plpAjaxData, $){
     if(plpAjaxData.itemsPerPage >= plpAjaxData.totalItemCount)
         return;
 
@@ -19,6 +19,8 @@ function runPlpPagination(plpAjaxData){
     $('dl', priceListContainer).after(paginationBlock);
 
     $('.plp-ajax-pagination li', priceListContainer).on('click', function(event){
+        if($(this).hasClass('active'))
+            return;
         var offset = plpAjaxData.itemsPerPage * ($(this).data('pagenum') - 1);
         var activeEl = $(this);
         $.post(plpAjaxData.ajaxurl, {
@@ -37,7 +39,7 @@ function runPlpPagination(plpAjaxData){
 };
 
 jQuery(document).ready(function($){
-    $(plpTest).each(function(i, el){
-        runPlpPagination(el);
+    $(plpInitialDataContainer).each(function(i, el){
+        runPlpPagination(el, $);
     });
 });
