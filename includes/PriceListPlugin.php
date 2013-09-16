@@ -9,6 +9,7 @@ class PriceListPlugin
     protected $_itemsPerPage;
     protected $_priceListParams;
     protected $_priceListObject;
+    protected $_htmlContainerId;
 
     /**
      * Initializes the plugin
@@ -262,6 +263,7 @@ class PriceListPlugin
 
     protected function setProcessedParams($params, $rewrite = false)
     {
+        $this->_htmlContainerId = 'plp-price-list-'.mt_rand(0, 256);
         $this->_itemsPerPage = isset($params['per_page']) ? (int)$params['per_page'] : null;
 
         if(isset($params['list_title'])){
@@ -297,7 +299,7 @@ class PriceListPlugin
     {
         $this->setupEnvironment($postInfo);
 
-        print '<div class="plp-price-list-block">';
+        print '<div id="'.$this->_htmlContainerId.'" class="plp-price-list-block">';
             print "<h3>{$this->_priceListObject->post_title}</h3>";
             print '<dl class="horizontal special green">';
             echo $this->renderPriceListItemsFrontend();
@@ -315,7 +317,8 @@ class PriceListPlugin
             'ajaxurl' => admin_url('admin-ajax.php'),
             'action' => 'plp-ajax-pagination',
             'nonce' => wp_create_nonce('plp-ajax-pagination-nonce'),
-            'priceListId' => $this->_priceListObject->ID,
+            'htmlContainerId' => $this->_htmlContainerId,
+            'priceListObjectId' => $this->_priceListObject->ID,
             'totalItemCount' => count($this->_priceListItems),
             'itemsPerPage' => $this->_itemsPerPage,
         ));

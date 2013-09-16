@@ -4,7 +4,8 @@ jQuery(document).ready(function($){
 
     console.log(plpAjaxData);
     var pageCount = Math.ceil(plpAjaxData.totalItemCount/plpAjaxData.itemsPerPage);
-    var priceListContainer = $('.plp-price-list-block');
+    // var priceListContainer = $('.plp-price-list-block');
+    var priceListContainer = $('#' + plpAjaxData.htmlContainerId);
     var paginationBlock = $('<ul/>', {
         'class': 'plp-ajax-pagination'
     });
@@ -26,7 +27,7 @@ jQuery(document).ready(function($){
             'plp-items-per-page': plpAjaxData.itemsPerPage,
             'action': plpAjaxData.action,
             'plp-ajax-nonce': plpAjaxData.nonce,
-            'plp-price-list-id': plpAjaxData.priceListId
+            'plp-price-list-id': plpAjaxData.priceListObjectId
         },function(data){
             $('dl', priceListContainer).html(data.priceListHtml);
 
