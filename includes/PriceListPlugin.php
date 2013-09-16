@@ -19,8 +19,12 @@ class PriceListPlugin
      */
     public function init()
     {
+        $containerId = $this->_htmlContainerId;
         $this->registerPostType();
         $this->isFirstTimeInstall();
+        add_action('wp_head', function(){
+            echo '<script type="text/javascript">plpTest = new Array;</script>';
+        });
 
         add_action('wp_ajax_plp-ajax-pagination', array($this, 'ajaxPaginationHandler'));
         add_action('wp_ajax_nopriv_plp-ajax-pagination', array($this, 'ajaxPaginationHandler'));
@@ -311,9 +315,7 @@ class PriceListPlugin
     {
         if(is_null($this->_itemsPerPage))
             return;
-
-        wp_enqueue_script('plp_ajax_pagination', PLP_URL.'js/plp-ajax-pagination.js', array('jquery'));
-        wp_localize_script('plp_ajax_pagination', 'plpAjaxData', array(
+        $jsData = json_encode(array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'action' => 'plp-ajax-pagination',
             'nonce' => wp_create_nonce('plp-ajax-pagination-nonce'),
@@ -322,6 +324,20 @@ class PriceListPlugin
             'totalItemCount' => count($this->_priceListItems),
             'itemsPerPage' => $this->_itemsPerPage,
         ));
+
+        echo '<script type="text/javascript">'
+            ."plpTest.push({$jsData})"
+            .';</script>';
+        wp_enqueue_script('plp_ajax_pagination', PLP_URL.'js/plp-ajax-pagination.js', array('jquery'), false, false);
+        /*wp_localize_script('plp_ajax_pagination', 'plpAjaxData', array(
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'action' => 'plp-ajax-pagination',
+            'nonce' => wp_create_nonce('plp-ajax-pagination-nonce'),
+            'htmlContainerId' => $this->_htmlContainerId,
+            'priceListObjectId' => $this->_priceListObject->ID,
+            'totalItemCount' => count($this->_priceListItems),
+            'itemsPerPage' => $this->_itemsPerPage,
+        ));*/
     }
 
     public function ajaxPaginationHandler()

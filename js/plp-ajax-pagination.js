@@ -1,10 +1,9 @@
-jQuery(document).ready(function($){
+function runPlpPagination(plpAjaxData){
     if(plpAjaxData.itemsPerPage >= plpAjaxData.totalItemCount)
         return;
 
     console.log(plpAjaxData);
     var pageCount = Math.ceil(plpAjaxData.totalItemCount/plpAjaxData.itemsPerPage);
-    // var priceListContainer = $('.plp-price-list-block');
     var priceListContainer = $('#' + plpAjaxData.htmlContainerId);
     var paginationBlock = $('<ul/>', {
         'class': 'plp-ajax-pagination'
@@ -34,5 +33,11 @@ jQuery(document).ready(function($){
             $('.plp-ajax-pagination li', priceListContainer).removeClass('active');
             activeEl.addClass('active');
         }, 'json');
+    });
+};
+
+jQuery(document).ready(function($){
+    $(plpTest).each(function(i, el){
+        runPlpPagination(el);
     });
 });
