@@ -313,8 +313,9 @@ class PriceListPlugin
 
     protected function makeAjaxPagination()
     {
-        if(is_null($this->_itemsPerPage))
+        if(is_null($this->_itemsPerPage) || ($this->_itemsPerPage >= count($this->_priceListItems)))
             return;
+
         $jsData = json_encode(array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'action' => 'plp-ajax-pagination',
@@ -328,6 +329,7 @@ class PriceListPlugin
         echo '<script type="text/javascript">'
             ."plpInitialDataContainer.push({$jsData})"
             .';</script>';
+
         wp_enqueue_script('plp_ajax_pagination', PLP_URL.'js/plp-ajax-pagination.js', array('jquery'), false, false);
     }
 

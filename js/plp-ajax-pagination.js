@@ -1,8 +1,5 @@
-function runPlpPagination(plpAjaxData, $){
-    if(plpAjaxData.itemsPerPage >= plpAjaxData.totalItemCount)
-        return;
-
-    console.log(plpAjaxData);
+function runPlpPagination(plpAjaxData, $)
+{
     var pageCount = Math.ceil(plpAjaxData.totalItemCount/plpAjaxData.itemsPerPage);
     var priceListContainer = $('#' + plpAjaxData.htmlContainerId);
     var paginationBlock = $('<ul/>', {
