@@ -1,0 +1,45 @@
+/* PLP Styles
+**********************************/
+.plp-price-list-block dl dt {
+    background-position: left center;
+    background-repeat: no-repeat;
+    padding-right: 32px;
+    font-weight: normal;
+    text-align: left;
+}
+.plp-price-list-block dl dd {
+    margin-left: 0;
+    margin-bottom: 12px;
+    padding-left: 24px;
+    overflow: hidden;
+}
+.plp-price-list-block dl.horizontal dt {
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+@media (min-width: 992px) {
+    .plp-price-list-block dl.horizontal dt {
+        float: left;
+        width: 75%;
+    }
+}
+.plp-price-list-block dl.horizontal dd {
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+@media (min-width: 992px) {
+    .plp-price-list-block dl.horizontal dd {
+        float: left;
+        width: 25%;
+    }
+}
+.plp-price-list-block dl.red dt {
+    background-image: url('../images/red-list-circle.png');
+}
+.plp-price-list-block dl.green dt {
+    background-image: url('../images/green-list-circle.png');
+}

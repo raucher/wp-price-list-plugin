@@ -19,7 +19,6 @@ class PriceListPlugin
      */
     public function init()
     {
-        $containerId = $this->_htmlContainerId;
         $this->registerPostType();
         $this->isFirstTimeInstall();
         add_action('wp_head', function(){
@@ -301,11 +300,12 @@ class PriceListPlugin
      */
     protected function renderPriceList($postInfo)
     {
+        wp_enqueue_style('plp-style', PLP_URL.'css/plp-style.css');
         $this->setupEnvironment($postInfo);
 
         print '<div id="'.$this->_htmlContainerId.'" class="plp-price-list-block">';
             print "<h3>{$this->_priceListObject->post_title}</h3>";
-            print '<dl class="horizontal special green">';
+            print '<dl class="horizontal green">';
             echo $this->renderPriceListItemsFrontend();
         print '</dl></div>';
         $this->makeAjaxPagination();
