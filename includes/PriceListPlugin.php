@@ -158,7 +158,7 @@ class PriceListPlugin
      */
     public function registerPostMetaboxes()
     {
-        add_meta_box('price-list-items', 'Price List Items', array($this, 'renderPriceListItems'), 'price_list', 'normal', 'high');
+        add_meta_box('price-list-items', 'Price List Items', array($this, 'renderPriceListMetaboxes'), 'price_list', 'normal', 'high');
     }
 
     /**
@@ -167,7 +167,7 @@ class PriceListPlugin
      * @param $post
      * @param $box
      */
-    public function renderPriceListItems($post, $box)
+    public function renderPriceListMetaboxes($post, $box)
     {   // Get price list items
         $priceListItems = get_post_meta($post->ID, '_price_list_item', true);
         // enerate a nonce
