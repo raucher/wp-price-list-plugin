@@ -2,13 +2,20 @@
 
 /**
  * Class PriceListPlugin
+ *
+ * @property WP_Post $_priceListObject Retrieved price list
+ * @property array $_priceListItems Retrieved price list items
+ * @property int $_itemsPerPage Count of item to display on frontend
+ * @property array $_priceListParams Initial parameters for query, display style, etc.
+ * @property string $_htmlContainerId Id to point JS on specific price list block
+ * @property string $_themeClass CSS class to style price list according to theme
  */
 class PriceListPlugin
 {
+    protected $_priceListObject;
     protected $_priceListItems;
     protected $_itemsPerPage;
     protected $_priceListParams;
-    protected $_priceListObject;
     protected $_htmlContainerId;
     protected $_themeClass;
 
@@ -16,12 +23,15 @@ class PriceListPlugin
      * Initializes the plugin
      *
      * Hooks necessary actions, registers new post type
-     * handles post saving proccess and other useful stuff
+     * handles post saving process and other useful stuff
      */
     public function init()
     {
         $this->registerPostType();
         $this->isFirstTimeInstall();
+
+        // Initialize JS array in the document head.
+        // Because several WP frameworks (such as bones) put enqueued scripts in to the footer
         add_action('wp_head', function(){
             echo '<script type="text/javascript">plpInitialDataContainer = new Array;</script>';
         });
@@ -79,7 +89,7 @@ class PriceListPlugin
     }
 
     /**
-     * Layout of the help page
+     * Renders help page layout
      */
     public function renderHelpPage()
     {
@@ -101,7 +111,7 @@ class PriceListPlugin
     }
 
     /**
-     * Checks for first time instalation
+     * Checks for first time installation
      */
     protected function isFirstTimeInstall()
     {
@@ -154,7 +164,7 @@ class PriceListPlugin
     }
 
     /**
-     * Registers additional form fields on price list page for list items
+     * Registers additional form fields for list items on the price list page
      */
     public function registerPriceListMetaboxes()
     {
@@ -170,7 +180,7 @@ class PriceListPlugin
     public function renderPriceListMetaboxes($post, $box)
     {   // Get price list items
         $priceListItems = get_post_meta($post->ID, '_plp_price_list_item', true);
-        // enerate a nonce
+        // Generate a nonce
         wp_nonce_field('plp_save_list_items', 'plp_nonce_field');
         // Output table with list item content
         print '<div id="postcustomstuff">
@@ -194,7 +204,8 @@ class PriceListPlugin
             printf('<td width="20%%"><input type="text" name="price-list-item[%d][price]" value=""></td> ', 0);
             print '</tr>';
         }
-        print '</table></div>'; // Close main table
+        // Close main table
+        print '</table></div>';
         // Echo out Add/Delete buttons
         print '<div style="margin-top:10px">
                 <button id="add-price-list-item">'. __('Add Item', 'plp-domain').'</button>
@@ -205,7 +216,7 @@ class PriceListPlugin
     /**
      * Hooks on save_post and checks whether the price list items is saving
      *
-     * @param $post_id
+     * @param int $post_id
      */
     public function savePriceListMetaboxes($post_id)
     {
@@ -232,10 +243,9 @@ class PriceListPlugin
     }
 
     /**
-     * Makes a request for the given price list
+     * Makes a request for the given price list and fills $_priceListObject on success
      *
-     * @param $postInfo
-     * @return null|object|WP_Post
+     * @return null|$this For the function chaining
      */
     protected function setPriceListObject()
     {
@@ -258,6 +268,11 @@ class PriceListPlugin
         return $this;
     }
 
+    /**
+     * Retrieves the price list metaboxes data and fill $_priceListItems on success
+     *
+     * @return $this For the function chaining
+     */
     protected function setPriceListItems()
     {
         $this->_priceListItems = get_post_meta($this->_priceListObject->ID, '_plp_price_list_item', true);
@@ -265,7 +280,13 @@ class PriceListPlugin
         return $this;
     }
 
-    protected function setProcessedParams($params, $rewrite = false)
+    /**
+     * Fills properties with user-given initial params or sets default values
+     *
+     * @param array $params Array of the initial params
+     * @return $this For the function chaining
+     */
+    protected function setProcessedParams($params)
     {
         $this->_htmlContainerId = 'plp-price-list-'.mt_rand(0, 256);
         $this->_itemsPerPage = isset($params['per_page']) ? (int)$params['per_page'] : null;
@@ -288,6 +309,11 @@ class PriceListPlugin
         return $this;
     }
 
+    /**
+     * Setups object environment
+     *
+     * @param array $envParams User given parameters
+     */
     protected function setupEnvironment($envParams)
     {
         $this->setProcessedParams($envParams)
@@ -313,11 +339,17 @@ class PriceListPlugin
         $this->makeAjaxPagination();
     }
 
+    /**
+     * Composes JSON object for the JS script and enqueue the script
+     */
     protected function makeAjaxPagination()
     {
+        // If items count to show per page is greater or equal to total amount of items
+        // then pagination not needed
         if(is_null($this->_itemsPerPage) || ($this->_itemsPerPage >= count($this->_priceListItems)))
             return;
 
+        // Compose JSON
         $jsData = json_encode(array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'action' => 'plp-ajax-pagination',
@@ -328,13 +360,18 @@ class PriceListPlugin
             'itemsPerPage' => $this->_itemsPerPage,
         ));
 
+        // Push it to global initial data array for further use in JS
         echo '<script type="text/javascript">'
             ."plpInitialDataContainer.push({$jsData})"
             .';</script>';
 
+        // Enqueue main plugin JS
         wp_enqueue_script('plp_ajax_pagination', PLP_URL.'js/plp-ajax-pagination.js', array('jquery'), false, false);
     }
 
+    /**
+     * Handler for the AJAX queries
+     */
     public function ajaxPaginationHandler()
     {
         if(!check_ajax_referer('plp-ajax-pagination-nonce', 'plp-ajax-nonce', false))
@@ -351,6 +388,12 @@ class PriceListPlugin
         die();
     }
 
+    /**
+     * Returns HTML representation for the price list items
+     *
+     * @param int $offset Offset from which to start
+     * @return string HTML
+     */
     protected function renderPriceListItems($offset = 0)
     {
         $itemsToShow = array_slice($this->_priceListItems, $offset, $this->_itemsPerPage);
@@ -365,10 +408,10 @@ class PriceListPlugin
     }
 
     /**
-     * Makes a shortcode to render price list on front-end
+     * Makes a shortcode to render price list on the front-end
      *
-     * @param $atts
-     * @return string
+     * @param array $atts User-given shortcode attributes
+     * @return string HTML to display on front-end
      */
     public function makeShortcode($atts)
     {
