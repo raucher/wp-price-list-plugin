@@ -10,6 +10,7 @@ class PriceListPlugin
     protected $_priceListParams;
     protected $_priceListObject;
     protected $_htmlContainerId;
+    protected $_themeClass;
 
     /**
      * Initializes the plugin
@@ -268,6 +269,7 @@ class PriceListPlugin
     {
         $this->_htmlContainerId = 'plp-price-list-'.mt_rand(0, 256);
         $this->_itemsPerPage = isset($params['per_page']) ? (int)$params['per_page'] : null;
+        $this->_themeClass = isset($params['theme']) ?(string)$params['theme'] : 'green-circle';
 
         if(isset($params['list_title'])){
             $this->_priceListParams = $params['list_title'];
@@ -305,7 +307,7 @@ class PriceListPlugin
 
         print '<div id="'.$this->_htmlContainerId.'" class="plp-price-list-block">';
             print "<h3>{$this->_priceListObject->post_title}</h3>";
-            print '<dl class="horizontal green">';
+            printf('<dl class="horizontal %s">', $this->_themeClass);
             echo $this->renderPriceListItemsFrontend();
         print '</dl></div>';
         $this->makeAjaxPagination();

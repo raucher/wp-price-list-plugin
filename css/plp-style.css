@@ -37,9 +37,9 @@
         width: 25%;
     }
 }
-.plp-price-list-block dl.red dt {
-    background-image: url('../images/red-list-circle.png');
+.plp-price-list-block dl.red-circle dt {
+    background-image: url('../images/red-circle.png');
 }
-.plp-price-list-block dl.green dt {
-    background-image: url('../images/green-list-circle.png');
+.plp-price-list-block dl.green-circle dt {
+    background-image: url('../images/green-circle.png');
 }
