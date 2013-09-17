@@ -51,7 +51,7 @@ class PriceListPlugin
         if(is_a($samplePostId, 'WP_Error'))
             wp_die('PLP can not create the sample price list');
 
-        add_post_meta($samplePostId, '_price_list_item', array(
+        add_post_meta($samplePostId, '_plp_price_list_item', array(
             array(
                 'desc' => 'Roasted nachos can be made smashed by covering with red wine.',
                 'price' => '150.99',
@@ -169,7 +169,7 @@ class PriceListPlugin
      */
     public function renderPriceListMetaboxes($post, $box)
     {   // Get price list items
-        $priceListItems = get_post_meta($post->ID, '_price_list_item', true);
+        $priceListItems = get_post_meta($post->ID, '_plp_price_list_item', true);
         // enerate a nonce
         wp_nonce_field('plp_save_list_items', 'plp_nonce_field');
         // Output table with list item content
@@ -218,7 +218,7 @@ class PriceListPlugin
             // Sanitize input data
             $data = $this->sanitizeArrayData($_POST['price-list-item']);
             // And save it
-            update_post_meta($post_id, '_price_list_item', $data);
+            update_post_meta($post_id, '_plp_price_list_item', $data);
         }
     }
 
@@ -260,7 +260,7 @@ class PriceListPlugin
 
     protected function setPriceListItems()
     {
-        $this->_priceListItems = get_post_meta($this->_priceListObject->ID, '_price_list_item', true);
+        $this->_priceListItems = get_post_meta($this->_priceListObject->ID, '_plp_price_list_item', true);
 
         return $this;
     }
