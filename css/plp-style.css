@@ -1,45 +1,86 @@
 /* PLP Styles
 **********************************/
-.plp-price-list-block dl dt {
+@media (min-width: 768px) {
+    .plp-price-list-block .horizontal dt {
+        float: left;
+        width: 160px;
+        clear: left;
+        text-align: right;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .plp-price-list-block .horizontal dd {
+        margin-left: 180px;
+    }
+    .plp-price-list-block .horizontal dd:before,
+    .plp-price-list-block .horizontal dd:after {
+        content: " ";
+        /* 1 */
+
+        display: table;
+        /* 2 */
+
+    }
+    .plp-price-list-block .horizontal dd:after {
+        clear: both;
+    }
+    .plp-price-list-block .horizontal dd:before,
+    .plp-price-list-block .horizontal dd:after {
+        content: " ";
+        /* 1 */
+
+        display: table;
+        /* 2 */
+
+    }
+    .plp-price-list-block .horizontal dd:after {
+        clear: both;
+    }
+}
+.plp-price-list-block .horizontal dt {
     background-position: left center;
     background-repeat: no-repeat;
     padding-right: 32px;
     font-weight: normal;
     text-align: left;
 }
-.plp-price-list-block dl dd {
+.plp-price-list-block .horizontal dd {
     margin-left: 0;
     margin-bottom: 12px;
     padding-left: 24px;
     overflow: hidden;
 }
-.plp-price-list-block dl.horizontal dt {
+.plp-price-list-block .horizontal dt {
     position: relative;
     min-height: 1px;
     padding-left: 15px;
     padding-right: 15px;
 }
 @media (min-width: 992px) {
-    .plp-price-list-block dl.horizontal dt {
+    .plp-price-list-block .horizontal dt {
         float: left;
         width: 75%;
     }
-}
-.plp-price-list-block dl.horizontal dd {
-    position: relative;
-    min-height: 1px;
-    padding-left: 15px;
-    padding-right: 15px;
-}
-@media (min-width: 992px) {
-    .plp-price-list-block dl.horizontal dd {
+    .plp-price-list-block .horizontal dd {
         float: left;
         width: 25%;
     }
 }
-.plp-price-list-block dl.red-circle dt {
+.plp-price-list-block .horizontal{
+    overflow: hidden;
+}
+
+.plp-price-list-block .horizontal dd {
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.plp-price-list-block .horizontal.red-circle dt {
     background-image: url('../images/red-circle.png');
 }
-.plp-price-list-block dl.green-circle dt {
+.plp-price-list-block .horizontal.green-circle dt {
     background-image: url('../images/green-circle.png');
 }
