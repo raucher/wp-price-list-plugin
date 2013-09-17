@@ -30,9 +30,9 @@ class PriceListPlugin
         add_action('wp_ajax_nopriv_plp-ajax-pagination', array($this, 'ajaxPaginationHandler'));
 
         add_action('admin_menu', array($this, 'registerHelpPage'));
-        add_action('add_meta_boxes', array($this, 'registerPostMetaboxes'));
+        add_action('add_meta_boxes', array($this, 'registerPriceListMetaboxes'));
         add_action('admin_enqueue_scripts', array($this, 'adminScriptInit'));
-        add_action('save_post', array($this, 'savePriceListItems'));
+        add_action('save_post', array($this, 'savePriceListMetaboxes'));
         add_shortcode('plp-price-list', array($this, 'makeShortcode'));
     }
 
@@ -75,13 +75,13 @@ class PriceListPlugin
         add_submenu_page('edit.php?post_type=price_list',
             __('Price list plugin help page', 'plp-domain'),
             __('What is this?', 'plp-domain'),
-            'edit_dashboard', 'plp_help_page', array($this, 'helpPageLayout'));
+            'edit_dashboard', 'plp_help_page', array($this, 'renderHelpPage'));
     }
 
     /**
      * Layout of the help page
      */
-    public function helpPageLayout()
+    public function renderHelpPage()
     {
         echo '<h1>'.__('What is this?', 'plp-domain').'</h1>';
     }
@@ -156,7 +156,7 @@ class PriceListPlugin
     /**
      * Registers additional form fields on price list page for list items
      */
-    public function registerPostMetaboxes()
+    public function registerPriceListMetaboxes()
     {
         add_meta_box('price-list-items', 'Price List Items', array($this, 'renderPriceListMetaboxes'), 'price_list', 'normal', 'high');
     }
@@ -207,7 +207,7 @@ class PriceListPlugin
      *
      * @param $post_id
      */
-    public function savePriceListItems($post_id)
+    public function savePriceListMetaboxes($post_id)
     {
         if(isset($_POST['price-list-item']))
         {   // Check the nonce
@@ -308,7 +308,7 @@ class PriceListPlugin
         print '<div id="'.$this->_htmlContainerId.'" class="plp-price-list-block">';
             print "<h3>{$this->_priceListObject->post_title}</h3>";
             printf('<dl class="horizontal %s">', $this->_themeClass);
-            echo $this->renderPriceListItemsFrontend();
+            echo $this->renderPriceListItems();
         print '</dl></div>';
         $this->makeAjaxPagination();
     }
@@ -346,12 +346,12 @@ class PriceListPlugin
         ));
 
         echo json_encode(array(
-            'priceListHtml' => $this->renderPriceListItemsFrontend((int)$_POST['plp-pagination-offset']),
+            'priceListHtml' => $this->renderPriceListItems((int)$_POST['plp-pagination-offset']),
         ));
         die();
     }
 
-    protected function renderPriceListItemsFrontend($offset = 0)
+    protected function renderPriceListItems($offset = 0)
     {
         $itemsToShow = array_slice($this->_priceListItems, $offset, $this->_itemsPerPage);
         $htmlOutput = '';
