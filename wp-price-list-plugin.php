@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Price List Plugin
+ * Plugin Name: WP Price List Plugin
  * Plugin URI: https://github.com/raucher/wp-price-list-plugin
  * Description: Allows you to create price-lists and embed them with a shortcode
  * Version: 1.0
