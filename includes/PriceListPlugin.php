@@ -61,20 +61,15 @@ class PriceListPlugin
         if(is_a($samplePostId, 'WP_Error'))
             wp_die('PLP can not create the sample price list');
 
-        add_post_meta($samplePostId, '_plp_price_list_item', array(
-            array(
+        // Generate 20 dummy price list items
+        for($i=0, $metaboxSamples = array(); $i<=20; $i++){
+            $metaboxSamples[] = array(
                 'desc' => 'Roasted nachos can be made smashed by covering with red wine.',
                 'price' => '150.99',
-            ),
-            array(
-                'desc' => 'Per guest prepare one quarter cup of tabasco.',
-                'price' => '05.79',
-            ),
-            array(
-                'desc' => 'Flavor one jar of tofu in one cup of whiskey.',
-                'price' => '25.00',
-            ),
-        ), true);
+            );
+        }
+
+        add_post_meta($samplePostId, '_plp_price_list_item', $metaboxSamples, true);
     }
 
     /**
