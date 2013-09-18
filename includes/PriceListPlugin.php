@@ -12,6 +12,7 @@
  */
 class PriceListPlugin
 {
+    protected $_currencySign;
     protected $_priceListObject;
     protected $_priceListItems;
     protected $_itemsPerPage;
@@ -61,9 +62,10 @@ class PriceListPlugin
         if(is_a($samplePostId, 'WP_Error'))
             wp_die('PLP can not create the sample price list');
 
-        // Generate 20 dummy price list items
-        for($i=0, $metaboxSamples = array(); $i<=20; $i++){
-            $metaboxSamples[] = array(
+        // Generate currency sign and 20 dummy price list items
+        $metaboxSamples = array('currency' => '$');
+        for($i=0; $i<=20; $i++){
+            $metaboxSamples['data'] = array(
                 'desc' => 'Roasted nachos can be made smashed by covering with red wine.',
                 'price' => '150.99',
             );
@@ -180,8 +182,10 @@ class PriceListPlugin
      */
     public function renderPriceListMetaboxes($post, $box)
     {
+        $metaData = get_post_meta($post->ID, '_plp_price_list_item', true);
         $this->renderLayout('metaboxes', array(
-           'metaBoxData' => get_post_meta($post->ID, '_plp_price_list_item', true)
+           'currency' => isset($metaData['currency']) ? $metaData['currency'] : '$',
+           'metaBoxData' => isset($metaData['data']) ? $metaData['data'] : null,
         ));
     }
 
@@ -241,13 +245,15 @@ class PriceListPlugin
     }
 
     /**
-     * Retrieves the price list metaboxes data and fill $_priceListItems on success
+     * Retrieves the price list metaboxes data and fills $_priceListItems on success
      *
      * @return $this For the function chaining
      */
     protected function setPriceListItems()
     {
-        $this->_priceListItems = get_post_meta($this->_priceListObject->ID, '_plp_price_list_item', true);
+        $data = get_post_meta($this->_priceListObject->ID, '_plp_price_list_item', true);
+        $this->_priceListItems = $data['data'];
+        $this->_currencySign = $data['currency'];
 
         return $this;
     }
@@ -373,7 +379,7 @@ class PriceListPlugin
 
         foreach($itemsToShow as $item)
         {
-            $htmlOutput .= "<dt>{$item['desc']}</dt><dd>{$item['price']}</dd>";
+            $htmlOutput .= "<dt>{$item['desc']}</dt><dd>{$this->_currencySign} {$item['price']}</dd>";
         }
 
         return $htmlOutput;
