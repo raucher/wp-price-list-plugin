@@ -218,6 +218,12 @@ class PriceListPlugin
         add_meta_box('price-list-items', 'Price List Items', array($this, 'renderPriceListMetaboxes'), 'price_list', 'normal', 'high');
     }
 
+    protected function renderLayout($layout, array $data = array())
+    {
+        extract($data);
+        require_once "layouts/{$layout}.php";
+    }
+
     /**
      * Renders the layout for additional form fields
      *
@@ -225,39 +231,10 @@ class PriceListPlugin
      * @param $box
      */
     public function renderPriceListMetaboxes($post, $box)
-    {   // Get price list items
-        $priceListItems = get_post_meta($post->ID, '_plp_price_list_item', true);
-        // Generate a nonce
-        wp_nonce_field('plp_save_list_items', 'plp_nonce_field');
-        // Output table with list item content
-        print '<div id="postcustomstuff">
-                <table id="newmeta" width="100%">
-                  <thead><tr>
-                    <th class="left">'.__('Item Description', 'plp-domain').'</th>
-                    <th>'.__('Item Price', 'plp-domain').'</th>
-                  </tr></thead>';
-        if(is_array($priceListItems)){
-            foreach ($priceListItems as $i => $item) {
-                print '<tr class="price-list-item-wrapper">';
-                printf('<td class="left" width="80%%"><textarea name="price-list-item[%d][desc]">%s</textarea></td> ', $i, $item['desc']);
-                printf('<td width="20%%"><input type="text" name="price-list-item[%d][price]" value="%s"></td> ', $i, $item['price']);
-                print '</tr>';
-            }
-        }
-        // If price list doesn't have any item yet, generate an empty fields for them
-        else{
-            print '<tr class="price-list-item-wrapper">';
-            printf('<td class="left" width="80%%"><textarea name="price-list-item[%d][desc]"></textarea></td> ', 0);
-            printf('<td width="20%%"><input type="text" name="price-list-item[%d][price]" value=""></td> ', 0);
-            print '</tr>';
-        }
-        // Close main table
-        print '</table></div>';
-        // Echo out Add/Delete buttons
-        print '<div style="margin-top:10px">
-                <button id="add-price-list-item">'. __('Add Item', 'plp-domain').'</button>
-                <button id="remove-price-list-item">'.__('Remove Item', 'plp-domain').'</button>
-              </div>';
+    {
+        $this->renderLayout('plp-metaboxes', array(
+           'metaBoxData' => get_post_meta($post->ID, '_plp_price_list_item', true)
+        ));
     }
 
     /**
