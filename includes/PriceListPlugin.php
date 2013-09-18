@@ -65,7 +65,7 @@ class PriceListPlugin
         // Generate currency sign and 20 dummy price list items
         $metaboxSamples = array('currency' => '$');
         for($i=0; $i<=20; $i++){
-            $metaboxSamples['data'] = array(
+            $metaboxSamples['data'][] = array(
                 'desc' => 'Roasted nachos can be made smashed by covering with red wine.',
                 'price' => '150.99',
             );

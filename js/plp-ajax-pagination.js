@@ -17,13 +17,22 @@ function runPlpPagination(plpAjaxData, $)
         'class': 'plp-ajax-pagination'
     });
     for(var i= 1; i <= pageCount; i++ ){
-        $('<li/>', {
+        var listItem = $('<li/>', {
             'class': (i==1) ? 'active' : '',
-            'text': i,
+            // 'text': i,
             'data-pagenum': i
-        }).appendTo(paginationBlock);
+        });
+        var anchor = $('<a/>', {
+            'text': i,
+            'href': '#'
+        })
+
+        listItem.append(anchor).appendTo(paginationBlock);
     }
-    $('dl', priceListContainer).after(paginationBlock);
+    var defList = $('dl', priceListContainer).after(paginationBlock);
+
+    // Set definition list permanent height to avoid jumping during page switching
+    defList.css('height', defList.css('height'));
 
     // Handle onClick and make AJAX request
     $('.plp-ajax-pagination li', priceListContainer).on('click', function(event){
@@ -42,6 +51,7 @@ function runPlpPagination(plpAjaxData, $)
             $('.plp-ajax-pagination li', priceListContainer).removeClass('active');
             activeEl.addClass('active');
         }, 'json');
+        return false;
     });
 };
 
