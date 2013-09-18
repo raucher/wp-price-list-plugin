@@ -1,0 +1,73 @@
+/*!
+ * Build on totally cut-off version of Bootstrap v3.0.0
+ *
+ * Copyright 2013 Twitter, Inc
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Designed and built with all the love in the world by @mdo and @fat.
+ */
+
+// Core variables and mixins
+@import "variables.less";
+@import "mixins.less";
+
+/* PLP Styles
+**********************************/
+@media (min-width: @grid-float-breakpoint){
+  .plp-price-list-block{
+    .horizontal{
+      dt {
+        float: left;
+        width: (@component-offset-horizontal - 20);
+        clear: left;
+        text-align: right;
+        .text-overflow();
+      }
+      dd {
+        margin-left: @component-offset-horizontal;
+        .clearfix(); // Clear the floated `dt` if an empty `dd` is present
+      }
+    }
+  }
+}
+
+.plp-price-list-block{
+  .plp-ajax-pagination{
+    .list-inline();
+    li{
+      padding: 0;
+      a{
+        margin: 0 2px;
+        padding: 1px 4px;
+      }
+      &.active a, & a:hover{
+          background: #ccc;
+          color: #fff;
+      }
+    }
+  }
+  .horizontal{
+    overflow: hidden;
+    dt{
+      .make-md-column(9);
+      padding-right: 32px;
+      background-position: left center; background-repeat: no-repeat;
+      font-weight: normal;
+      text-align: left;
+    }
+    dd{
+      .make-md-column(3);
+      margin-left: 0;
+      margin-bottom: 12px;
+      padding-left: 24px;
+      overflow: hidden;
+    }
+    &.red-circle{
+      dt{ background-image: url('../images/red-circle.png'); }
+    }
+    &.green-circle{
+      dt{ background-image: url('../images/green-circle.png'); }
+    }
+  }
+}
