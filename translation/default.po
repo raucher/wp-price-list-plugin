@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2013-09-18 10:49+0200\n"
+"PO-Revision-Date: 2013-09-18 10:49+0200\n"
+"Last-Translator: Maksims Muizininkas <makc.translations@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ..\n"
+"X-Poedit-SearchPath-2: ../includes\n"
+
+#: ../includes/PriceListPlugin.php:81
+msgid "Price list plugin help page"
+msgstr ""
+
+#: ../includes/PriceListPlugin.php:82
+msgid "What is this?"
+msgstr ""
+
+#: ../includes/PriceListPlugin.php:129 ../includes/PriceListPlugin.php:130
+msgid "Price Lists"
+msgstr ""
+
+#: ../includes/PriceListPlugin.php:132
+msgid "Add New"
+msgstr ""
+
+#: ../includes/PriceListPlugin.php:133
+msgid "Add New Price List"
+msgstr ""
+
+#: ../includes/PriceListPlugin.php:134
+msgid "Edit"
+msgstr ""
+
+#: ../includes/PriceListPlugin.php:135
+msgid "Edit Price Lists"
+msgstr ""
+
+#: ../includes/PriceListPlugin.php:136
+msgid "New Price List"
+msgstr ""
+
+#: ../includes/PriceListPlugin.php:137
+msgid "View Price List"
+msgstr ""
+
+#: ../includes/PriceListPlugin.php:138
+msgid "Search Price List"
+msgstr ""
+
+#: ../includes/PriceListPlugin.php:139
+msgid "Nothing found in the Database."
+msgstr ""
+
+#: ../includes/PriceListPlugin.php:140
+msgid "Nothing found in Trash"
+msgstr ""
+
+#: ../includes/PriceListPlugin.php:143
+msgid "Price list to display on frontend"
+msgstr ""
+
+#: ../includes/layouts/help-page.php:8
+msgid "What is this and what the plugin does?"
+msgstr ""
+
+#: ../includes/layouts/help-page.php:12
+msgid ""
+"This plugin allows you to create price lists and easily embed them to your "
+"content with shortcodes. Either several themes for price list representation "
+"are available. You can specify theme as the shortcode parameter, default is "
+"\"green-circle\""
+msgstr ""
+
+#: ../includes/layouts/help-page.php:14
+msgid "Example shortcode:"
+msgstr ""
+
+#: ../includes/layouts/help-page.php:16
+msgid "Shortcode parameters:"
+msgstr ""
+
+#: ../includes/layouts/help-page.php:20
+msgid "Parameter name"
+msgstr ""
+
+#: ../includes/layouts/help-page.php:21
+msgid "Parameter description"
+msgstr ""
+
+#: ../includes/layouts/help-page.php:27
+msgid "Get desired price list by title"
+msgstr ""
+
+#: ../includes/layouts/help-page.php:31
+msgid ""
+"Get the price list by slug. It is more safe way to query a price list, "
+"because you can change the price list title while editing it, but not the "
+"slug!"
+msgstr ""
+
+#: ../includes/layouts/help-page.php:35
+msgid ""
+"Get the price list by id. Not very handy but you can be sure that you will "
+"get exactly the same post you want!"
+msgstr ""
+
+#: ../includes/layouts/help-page.php:39
+msgid ""
+"Choose the amount of rows to display in price list. Pagination will be "
+"automatically enabled if amounts of goods exceeds the amount of rows to "
+"display per page"
+msgstr ""
+
+#: ../includes/layouts/help-page.php:43
+msgid ""
+"Price list visual representation. You can choose between \"green-circle\" "
+"and \"red-circle\" for this moment"
+msgstr ""
+
+#: ../includes/layouts/metaboxes.php:15
+msgid "Item Description"
+msgstr ""
+
+#: ../includes/layouts/metaboxes.php:16
+msgid "Item Price"
+msgstr ""
+
+#: ../includes/layouts/metaboxes.php:38
+msgid "Add Item"
+msgstr ""
+
+#: ../includes/layouts/metaboxes.php:39
+msgid "Remove Item"
+msgstr ""
