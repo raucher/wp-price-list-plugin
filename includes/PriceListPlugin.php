@@ -64,7 +64,7 @@ class PriceListPlugin
 
         // Generate currency sign and 20 dummy price list items
         $metaboxSamples = array('currency' => '$');
-        for($i=0; $i<=20; $i++){
+        for($i=0; $i<20; $i++){
             $metaboxSamples['data'][] = array(
                 'desc' => 'Roasted nachos can be made smashed by covering with red wine.',
                 'price' => '150.99',
@@ -238,7 +238,7 @@ class PriceListPlugin
             $this->_priceListObject = $query->post;
         }
 
-        if(is_null($this->_priceListObject) || !is_a($this->_priceListObject, 'WP_Post'))
+        if(is_null($this->_priceListObject) || !is_object($this->_priceListObject))
             wp_die('Can not retrieve given price list');
 
         return $this;
