@@ -1,6 +1,7 @@
 <?php
 /**
- * @var array $metaBoxData Array of meta box data
+ * @var $this object of the plugin main class
+ * @var $metaBoxData Array of meta box data
  */
 ?>
 
