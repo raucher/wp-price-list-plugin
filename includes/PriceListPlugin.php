@@ -147,7 +147,7 @@ class PriceListPlugin
                   'show_ui' => true,
                   'query_var' => true,
                   'menu_position' => 7, /* this is what order you want it to appear in on the left hand side menu */
-                  'menu_icon' => PLP_URL.'images/money_euro.png', //get_stylesheet_directory_uri() . '/library/images/custom-post-icon.png', /* the icon for the custom post type menu */
+                  'menu_icon' => PLP_URL.'images/price_list.png', /* the icon for the custom post type menu */
                   'rewrite'	=> array( 'slug' => 'price_list', 'with_front' => false ), /* you can specify its url slug */
                   'has_archive' => 'price_list', /* you can rename the slug here */
                   'capability_type' => 'post',
