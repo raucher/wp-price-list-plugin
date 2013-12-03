@@ -62,12 +62,19 @@ class PriceListPlugin
         if(is_a($samplePostId, 'WP_Error'))
             wp_die('PLP can not create the sample price list');
 
+		// Custom descriptions for dummy price list items
+		$descs = array(
+			'Roasted nachos can be made smashed by covering with red wine.',
+			'Jumble seven tablespoons of peanuts in one jar.',
+			'Rinse each side of the nachos with one cup of rice.'
+		);
+
         // Generate currency sign and 20 dummy price list items
         $metaboxSamples = array('currency' => '$');
         for($i=0; $i<5; $i++){
             $metaboxSamples['data'][] = array(
-                'desc' => 'Roasted nachos can be made smashed by covering with red wine.',
-                'price' => '150.99',
+                'desc' => $descs[mt_rand(0, count($descs)-1)],
+                'price' => mt_rand(75, 199),
             );
         }
 
